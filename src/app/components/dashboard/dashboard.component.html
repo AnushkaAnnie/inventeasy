@@ -1,0 +1,219 @@
+<div class="dashboard" *ngIf="!loading; else loadingTpl">
+  <!-- Metric Cards -->
+  <div class="metrics-grid">
+    <div class="metric-card" style="--accent: #6366f1; --accent-light: #eef2ff;">
+      <div class="metric-icon-wrap">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Total Products</span>
+        <span class="metric-value">{{ displayProducts }}</span>
+        <span class="metric-sub">In inventory</span>
+      </div>
+    </div>
+
+    <div class="metric-card" style="--accent: #10b981; --accent-light: #d1fae5;">
+      <div class="metric-icon-wrap">
+        <mat-icon>trending_up</mat-icon>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Total Revenue</span>
+        <span class="metric-value">{{ displayRevenue | currencyFormat }}</span>
+        <span class="metric-sub">Completed sales</span>
+      </div>
+    </div>
+
+    <div class="metric-card" style="--accent: #f59e0b; --accent-light: #fef3c7;">
+      <div class="metric-icon-wrap">
+        <mat-icon>warning_amber</mat-icon>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Low Stock Alerts</span>
+        <span class="metric-value alert-value">{{ displayLowStock }}</span>
+        <span class="metric-sub">Need attention</span>
+      </div>
+    </div>
+
+    <div class="metric-card" style="--accent: #3b82f6; --accent-light: #dbeafe;">
+      <div class="metric-icon-wrap">
+        <mat-icon>handshake</mat-icon>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Active Suppliers</span>
+        <span class="metric-value">{{ displaySuppliers }}</span>
+        <span class="metric-sub">Partners</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content-grid">
+    <!-- Low Stock Alerts -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <mat-icon class="panel-icon" style="color: #f59e0b;">warning_amber</mat-icon>
+          <span>Low Stock Items</span>
+        </div>
+        <a routerLink="/products" class="panel-link">View All →</a>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="lowStockProducts.length === 0" class="empty-state">
+          <mat-icon style="color: #10b981;">check_circle</mat-icon>
+          <p>All stock levels are healthy!</p>
+        </div>
+        <div *ngFor="let product of lowStockProducts" class="alert-item">
+          <div class="alert-left">
+            <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="alert-img">
+            <div *ngIf="!product.imageUrl" class="alert-img-placeholder">
+              <mat-icon>inventory_2</mat-icon>
+            </div>
+            <div class="alert-info">
+              <span class="alert-name">{{ product.name }}</span>
+              <span class="alert-sku">{{ product.sku | uppercase }}</span>
+            </div>
+          </div>
+          <div class="alert-right">
+            <div class="stock-bar-container">
+              <div class="stock-bar" [style.width.%]="getStockPercentage(product)"
+                [style.background]="getStockColor(product)"></div>
+            </div>
+            <span class="stock-label" [style.color]="getStockColor(product)">
+              {{ product.stockLevel }} / {{ product.maxStockLevel || product.minStockLevel * 3 }}
+            </span>
+            <span class="reorder-tag" *ngIf="product.stockLevel <= product.minStockLevel">⚠ Reorder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Summary + Quick Stats -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <mat-icon class="panel-icon" style="color: #6366f1;">analytics</mat-icon>
+          <span>Inventory Overview</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <span class="stat-label">Inventory Value</span>
+            <span class="stat-value">{{ displayInventory | currencyFormat }}</span>
+          </div>
+          <div class="summary-stat">
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">{{ totalOrders }}</span>
+          </div>
+          <div class="summary-stat">
+            <span class="stat-label">Categories</span>
+            <span class="stat-value">{{ categoryData.length }}</span>
+          </div>
+        </div>
+
+        <!-- Stock Status Chart -->
+        <div class="chart-section">
+          <h4 class="chart-title">Stock Health</h4>
+          <div class="bar-chart">
+            <div *ngFor="let item of stockStatusData" class="bar-row">
+              <span class="bar-label">{{ item.label }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="totalProducts > 0 ? (item.count / totalProducts * 100) : 0"
+                  [style.background]="item.color"></div>
+              </div>
+              <span class="bar-value">{{ item.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Distribution -->
+        <div class="chart-section">
+          <h4 class="chart-title">Categories</h4>
+          <div class="pie-chart-container">
+            <div class="pie-chart" [style.background]="getCategoryGradient()"></div>
+            <div class="pie-legend">
+              <div *ngFor="let cat of categoryData" class="legend-item">
+                <span class="legend-dot" [style.background]="cat.color"></span>
+                <span class="legend-label">{{ cat.name }}</span>
+                <span class="legend-value">{{ cat.percentage }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Products -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-title">
+        <mat-icon class="panel-icon" style="color: #3b82f6;">history</mat-icon>
+        <span>Recent Products</span>
+      </div>
+      <a routerLink="/products" class="panel-link">View All →</a>
+    </div>
+    <div class="panel-body">
+      <div class="recent-table">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of recentProducts" class="table-row">
+              <td>
+                <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="table-img">
+                <div *ngIf="!product.imageUrl" class="table-img-placeholder">
+                  <mat-icon>inventory_2</mat-icon>
+                </div>
+              </td>
+              <td class="product-name">{{ product.name }}</td>
+              <td class="text-muted">{{ product.sku | uppercase }}</td>
+              <td><span class="category-tag">{{ product.category }}</span></td>
+              <td class="text-bold">{{ product.sellingPrice | currencyFormat }}</td>
+              <td>
+                <div class="stock-inline">
+                  <div class="stock-bar-sm-container">
+                    <div class="stock-bar-sm" [style.width.%]="getStockPercentage(product)"
+                      [style.background]="getStockColor(product)"></div>
+                  </div>
+                  <span [style.color]="getStockColor(product)">{{ product.stockLevel }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="status-pill" [class.active]="product.status === 'active'"
+                  [class.discontinued]="product.status === 'discontinued'">
+                  {{ product.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<ng-template #loadingTpl>
+  <div class="dashboard">
+    <div class="metrics-grid">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]">
+        <div class="skeleton" style="width: 48px; height: 48px; border-radius: 12px;"></div>
+        <div style="flex: 1;">
+          <div class="skeleton" style="width: 60%; height: 14px; margin-bottom: 8px;"></div>
+          <div class="skeleton" style="width: 40%; height: 28px; margin-bottom: 6px;"></div>
+          <div class="skeleton" style="width: 50%; height: 12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

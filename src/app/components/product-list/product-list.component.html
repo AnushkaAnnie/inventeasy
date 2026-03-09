@@ -1,0 +1,227 @@
+<div class="page-container" *ngIf="!loading; else loadingTpl">
+    <div class="page-header">
+        <div class="page-title-section">
+            <h1 class="page-title">
+                <mat-icon class="title-icon">inventory_2</mat-icon>
+                Products
+            </h1>
+            <p class="page-subtitle">Manage your product inventory</p>
+        </div>
+        <button mat-raised-button color="primary" (click)="toggleAddForm()">
+            <mat-icon>{{ showAddForm ? 'close' : 'add' }}</mat-icon>
+            {{ showAddForm ? 'Cancel' : 'Add Product' }}
+        </button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="search-wrap">
+            <mat-icon class="search-icon">search</mat-icon>
+            <input class="search-input" (keyup)="applyFilter($event)" placeholder="Search products...">
+        </div>
+
+        <div class="filter-actions">
+            <!-- Category Chips -->
+            <div class="category-chips">
+                <button *ngFor="let cat of categories" class="chip" [class.chip-active]="selectedCategory === cat"
+                    (click)="filterByCategory(cat)">
+                    {{ cat }}
+                </button>
+            </div>
+
+            <button class="filter-btn" [class.filter-active]="showLowStockOnly" (click)="toggleLowStockFilter()">
+                <mat-icon>warning_amber</mat-icon>
+                {{ showLowStockOnly ? 'Show All' : 'Low Stock' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Product Form -->
+    <div *ngIf="showAddForm" class="add-form-container animate-scale-in">
+        <h3>Add New Product</h3>
+        <form [formGroup]="productForm" (ngSubmit)="addProduct()" class="product-form">
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Product Name</mat-label>
+                    <input matInput formControlName="name" placeholder="Enter product name">
+                    <mat-error *ngIf="productForm.get('name')?.hasError('required')">Name is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>SKU</mat-label>
+                    <input matInput formControlName="sku" placeholder="e.g. TECH-001">
+                    <mat-error *ngIf="productForm.get('sku')?.hasError('required')">SKU is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <input matInput formControlName="category" placeholder="e.g. Electronics">
+                    <mat-error *ngIf="productForm.get('category')?.hasError('required')">Category is
+                        required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Unit</mat-label>
+                    <input matInput formControlName="unit" placeholder="e.g. pcs, kg">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Cost Price</mat-label>
+                    <input matInput formControlName="costPrice" type="number" step="0.01">
+                    <span matPrefix>$&nbsp;</span>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Selling Price</mat-label>
+                    <input matInput formControlName="sellingPrice" type="number" step="0.01">
+                    <span matPrefix>$&nbsp;</span>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Stock Level</mat-label>
+                    <input matInput formControlName="stockLevel" type="number">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Min Stock Level</mat-label>
+                    <input matInput formControlName="minStockLevel" type="number">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Supplier</mat-label>
+                    <select matNativeControl formControlName="supplierId">
+                        <option value="">Select a supplier</option>
+                        <option *ngFor="let s of suppliers" [value]="s.id">{{ s.name }}</option>
+                    </select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="2"
+                        placeholder="Product description"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="!productForm.valid">
+                    <mat-icon>save</mat-icon> Save Product
+                </button>
+                <button mat-button type="button" (click)="toggleAddForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Product Table -->
+    <div class="table-card">
+        <table mat-table [dataSource]="dataSource" matSort class="product-table">
+            <!-- Image Column -->
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let product">
+                    <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="product-img">
+                    <div *ngIf="!product.imageUrl" class="product-img-placeholder">
+                        <mat-icon>inventory_2</mat-icon>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Product</th>
+                <td mat-cell *matCellDef="let product">
+                    <a [routerLink]="['/products', product.id]" class="product-link">{{ product.name }}</a>
+                </td>
+            </ng-container>
+
+            <!-- SKU Column -->
+            <ng-container matColumnDef="sku">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU</th>
+                <td mat-cell *matCellDef="let product" class="text-muted">{{ product.sku | uppercase }}</td>
+            </ng-container>
+
+            <!-- Category Column -->
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+                <td mat-cell *matCellDef="let product">
+                    <span class="category-tag">{{ product.category }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Cost Price Column -->
+            <ng-container matColumnDef="costPrice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost</th>
+                <td mat-cell *matCellDef="let product">{{ product.costPrice | currency:'USD' }}</td>
+            </ng-container>
+
+            <!-- Selling Price Column -->
+            <ng-container matColumnDef="sellingPrice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+                <td mat-cell *matCellDef="let product" class="text-bold">{{ product.sellingPrice | currency:'USD' }}
+                </td>
+            </ng-container>
+
+            <!-- Stock Level Column -->
+            <ng-container matColumnDef="stockLevel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Stock</th>
+                <td mat-cell *matCellDef="let product">
+                    <div class="stock-cell">
+                        <div class="stock-bar-track">
+                            <div class="stock-bar-fill" [style.width.%]="getStockPercentage(product)"
+                                [style.background]="getStockColor(product)"></div>
+                        </div>
+                        <span class="stock-text" [style.color]="getStockColor(product)">
+                            {{ product.stockLevel }} / {{ product.maxStockLevel || '—' }}
+                        </span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let product">
+                    <span class="status-pill" [class.active]="product.status === 'active'"
+                        [class.discontinued]="product.status === 'discontinued'">
+                        {{ product.status }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let product">
+                    <div class="action-btns">
+                        <a [routerLink]="['/products', product.id]" class="action-link" matTooltip="View Details">
+                            <mat-icon>visibility</mat-icon>
+                        </a>
+                        <button class="action-link danger" (click)="deleteProduct(product)" matTooltip="Delete">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+        </table>
+
+        <div *ngIf="dataSource.data.length === 0" class="empty-state">
+            <mat-icon>inventory_2</mat-icon>
+            <h3>No products found</h3>
+            <p>Try adjusting your filters or add a new product.</p>
+        </div>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>
+
+<!-- Loading State -->
+<ng-template #loadingTpl>
+    <div class="page-container">
+        <div class="skeleton" style="width: 200px; height: 28px; margin-bottom: 24px;"></div>
+        <div class="skeleton" style="width: 100%; height: 48px; margin-bottom: 16px; border-radius: 12px;"></div>
+        <div *ngFor="let i of [1,2,3,4,5]" class="skeleton" style="width: 100%; height: 56px; margin-bottom: 4px;">
+        </div>
+    </div>
+</ng-template>

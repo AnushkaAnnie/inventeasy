@@ -1,0 +1,145 @@
+/* ========================================
+   SUPPLIER LIST — Premium Design
+   ======================================== */
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--sf-text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.title-icon {
+    color: var(--sf-primary);
+}
+
+.page-subtitle {
+    margin: 4px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--sf-text-muted);
+}
+
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.add-form-container {
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    padding: 24px;
+    margin-bottom: 20px;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.add-form-container h3 {
+    margin-top: 0;
+    color: var(--sf-text-primary);
+    font-weight: 700;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.table-card {
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    overflow: hidden;
+}
+
+.supplier-table {
+    width: 100%;
+}
+
+.status-badge {
+    padding: 3px 10px;
+    border-radius: var(--sf-radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--sf-radius-sm);
+    background: transparent;
+    color: var(--sf-text-muted);
+    cursor: pointer;
+    transition: all var(--sf-transition-fast);
+}
+
+.action-link:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.action-link mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--sf-text-muted);
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 0.85rem;
+}

@@ -1,0 +1,340 @@
+/* ========================================
+   ANALYTICS — Premium Charts & Insights
+   ======================================== */
+
+.analytics-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--sf-text-primary);
+    margin: 0;
+}
+
+.title-icon {
+    color: var(--sf-primary);
+}
+
+.page-subtitle {
+    margin: 4px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--sf-text-muted);
+}
+
+/* Metrics Row */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.metric-card-sm {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-md);
+    transition: all var(--sf-transition-base);
+}
+
+.metric-card-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sf-shadow-md);
+}
+
+.metric-card-sm mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.metric-sm-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--sf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-sm-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--sf-text-primary);
+}
+
+/* Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.chart-panel {
+    background: var(--sf-surface);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    padding: 20px;
+    transition: box-shadow var(--sf-transition-base);
+}
+
+.chart-panel:hover {
+    box-shadow: var(--sf-shadow-md);
+}
+
+.chart-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--sf-text-primary);
+    margin: 0 0 16px 0;
+}
+
+.chart-title mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Pie Chart */
+.pie-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.pie {
+    width: 120px;
+    height: 120px;
+    min-width: 120px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.pie::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    background: var(--sf-surface);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+}
+
+.legend-color {
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    border-radius: 3px;
+}
+
+.legend-name {
+    color: var(--sf-text-secondary);
+    flex: 1;
+}
+
+.legend-count {
+    color: var(--sf-text-muted);
+    font-size: 0.75rem;
+}
+
+.legend-pct {
+    font-weight: 700;
+    color: var(--sf-text-primary);
+    min-width: 30px;
+    text-align: right;
+}
+
+/* Stock Health Bars */
+.health-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.health-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.health-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.health-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sf-text-secondary);
+}
+
+.health-value {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.health-track {
+    width: 100%;
+    height: 10px;
+    background: var(--sf-bg-secondary);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.health-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.8s ease-out;
+}
+
+/* Revenue Vertical Bars */
+.revenue-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    height: 200px;
+    padding-top: 20px;
+}
+
+.revenue-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+}
+
+.revenue-val {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--sf-text-muted);
+    white-space: nowrap;
+}
+
+.revenue-bar-track {
+    flex: 1;
+    width: 100%;
+    max-width: 40px;
+    background: var(--sf-bg-secondary);
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.revenue-bar-fill {
+    width: 100%;
+    background: var(--sf-gradient-primary);
+    border-radius: 6px 6px 0 0;
+    transition: height 0.8s ease-out;
+    min-height: 4px;
+}
+
+.revenue-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--sf-text-muted);
+}
+
+/* Top Products */
+.top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.top-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--sf-bg-secondary);
+    border-radius: var(--sf-radius-sm);
+    transition: all var(--sf-transition-fast);
+}
+
+.top-item:hover {
+    background: var(--sf-surface-hover);
+}
+
+.top-rank {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--sf-primary);
+    min-width: 24px;
+}
+
+.top-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--sf-text-primary);
+}
+
+.top-orders {
+    font-size: 0.7rem;
+    color: var(--sf-text-muted);
+}
+
+.top-revenue {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--sf-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pie-section {
+        flex-direction: column;
+    }
+
+    .revenue-chart {
+        height: 160px;
+    }
+}

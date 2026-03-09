@@ -1,0 +1,130 @@
+<div class="analytics-page" *ngIf="!loading; else loadingTpl">
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <mat-icon class="title-icon">analytics</mat-icon>
+                Analytics
+            </h1>
+            <p class="page-subtitle">Inventory insights and performance metrics</p>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="metrics-row">
+        <div class="metric-card-sm">
+            <mat-icon style="color: #10b981;">trending_up</mat-icon>
+            <div>
+                <span class="metric-sm-label">Revenue</span>
+                <span class="metric-sm-value">{{ totalRevenue | currencyFormat }}</span>
+            </div>
+        </div>
+        <div class="metric-card-sm">
+            <mat-icon style="color: #6366f1;">account_balance_wallet</mat-icon>
+            <div>
+                <span class="metric-sm-label">Inventory Value</span>
+                <span class="metric-sm-value">{{ totalInventoryValue | currencyFormat }}</span>
+            </div>
+        </div>
+        <div class="metric-card-sm">
+            <mat-icon style="color: #3b82f6;">sell</mat-icon>
+            <div>
+                <span class="metric-sm-label">Avg. Price</span>
+                <span class="metric-sm-value">{{ avgProductPrice | currencyFormat }}</span>
+            </div>
+        </div>
+        <div class="metric-card-sm">
+            <mat-icon style="color: #f59e0b;">pie_chart</mat-icon>
+            <div>
+                <span class="metric-sm-label">Profit Margin</span>
+                <span class="metric-sm-value">{{ profitMargin }}%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+        <!-- Inventory Distribution (Pie) -->
+        <div class="chart-panel">
+            <h3 class="chart-title">
+                <mat-icon style="color: #6366f1;">donut_large</mat-icon>
+                Inventory Distribution
+            </h3>
+            <div class="pie-section">
+                <div class="pie" [style.background]="getCategoryGradient()"></div>
+                <div class="pie-legend">
+                    <div *ngFor="let cat of categoryData" class="legend-row">
+                        <span class="legend-color" [style.background]="cat.color"></span>
+                        <span class="legend-name">{{ cat.name }}</span>
+                        <span class="legend-count">{{ cat.count }} items</span>
+                        <span class="legend-pct">{{ cat.percentage }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Health (Horizontal bars) -->
+        <div class="chart-panel">
+            <h3 class="chart-title">
+                <mat-icon style="color: #10b981;">health_and_safety</mat-icon>
+                Stock Health
+            </h3>
+            <div class="health-bars">
+                <div *ngFor="let item of stockHealthData" class="health-row">
+                    <div class="health-header">
+                        <span class="health-label">{{ item.label }}</span>
+                        <span class="health-value" [style.color]="item.color">{{ item.count }} products</span>
+                    </div>
+                    <div class="health-track">
+                        <div class="health-fill" [style.width.%]="item.percentage" [style.background]="item.color">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Trend (Vertical bars) -->
+        <div class="chart-panel">
+            <h3 class="chart-title">
+                <mat-icon style="color: #3b82f6;">show_chart</mat-icon>
+                Revenue Trend
+            </h3>
+            <div class="revenue-chart">
+                <div *ngFor="let m of monthlyRevenue" class="revenue-bar-col">
+                    <div class="revenue-val">{{ m.value | currencyFormat }}</div>
+                    <div class="revenue-bar-track">
+                        <div class="revenue-bar-fill" [style.height.%]="m.percentage"></div>
+                    </div>
+                    <span class="revenue-label">{{ m.month }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="chart-panel">
+            <h3 class="chart-title">
+                <mat-icon style="color: #f59e0b;">star</mat-icon>
+                Top Products by Value
+            </h3>
+            <div class="top-list">
+                <div *ngFor="let p of topProducts; let i = index" class="top-item">
+                    <span class="top-rank">#{{ i + 1 }}</span>
+                    <div class="top-info">
+                        <span class="top-name">{{ p.name }}</span>
+                        <span class="top-orders">{{ p.orders }} orders</span>
+                    </div>
+                    <span class="top-revenue">{{ p.revenue | currencyFormat }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingTpl>
+    <div class="analytics-page">
+        <div class="skeleton" style="width: 200px; height: 28px; margin-bottom: 24px;"></div>
+        <div class="metrics-row">
+            <div *ngFor="let i of [1,2,3,4]" class="skeleton" style="height: 80px; border-radius: 12px;"></div>
+        </div>
+    </div>
+</ng-template>

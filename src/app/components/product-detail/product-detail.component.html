@@ -1,0 +1,158 @@
+<div class="detail-container" *ngIf="!loading; else loadingTpl">
+    <div *ngIf="product; else notFoundTpl">
+        <!-- Back Button -->
+        <a routerLink="/products" class="back-link">
+            <mat-icon>arrow_back</mat-icon> Back to Products
+        </a>
+
+        <mat-card class="detail-card">
+            <mat-card-header>
+                <mat-card-title>
+                    <mat-icon class="title-icon">inventory_2</mat-icon>
+                    {{ product.name }}
+                </mat-card-title>
+                <mat-card-subtitle>{{ product.sku | uppercase }} • {{ product.category }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <!-- Status Badge -->
+                <div class="status-section">
+                    <span class="detail-status" [ngClass]="getStockClass()">{{ getStockStatus() }}</span>
+                    <span class="product-status" [class.active]="product.status === 'active'"
+                        [class.discontinued]="product.status === 'discontinued'">
+                        {{ product.status | uppercase }}
+                    </span>
+                </div>
+
+                <!-- Product Info Grid -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <mat-icon>label</mat-icon>
+                        <div>
+                            <p class="info-label">SKU</p>
+                            <p class="info-value">{{ product.sku | uppercase }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>category</mat-icon>
+                        <div>
+                            <p class="info-label">Category</p>
+                            <p class="info-value">{{ product.category }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>shopping_cart</mat-icon>
+                        <div>
+                            <p class="info-label">Cost Price</p>
+                            <p class="info-value">{{ product.costPrice | currency:'USD' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>sell</mat-icon>
+                        <div>
+                            <p class="info-label">Selling Price</p>
+                            <p class="info-value">{{ product.sellingPrice | currency:'USD' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>inventory</mat-icon>
+                        <div>
+                            <p class="info-label">Current Stock</p>
+                            <p class="info-value" [ngClass]="getStockClass()">{{ product.stockLevel }} {{ product.unit
+                                }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>warning</mat-icon>
+                        <div>
+                            <p class="info-label">Min Stock Level</p>
+                            <p class="info-value">{{ product.minStockLevel }} {{ product.unit }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="product.maxStockLevel">
+                        <mat-icon>assessment</mat-icon>
+                        <div>
+                            <p class="info-label">Max Stock Level</p>
+                            <p class="info-value">{{ product.maxStockLevel }} {{ product.unit }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>straighten</mat-icon>
+                        <div>
+                            <p class="info-label">Unit</p>
+                            <p class="info-value">{{ product.unit }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="product.barcode">
+                        <mat-icon>qr_code</mat-icon>
+                        <div>
+                            <p class="info-label">Barcode</p>
+                            <p class="info-value">{{ product.barcode }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <mat-icon>calendar_today</mat-icon>
+                        <div>
+                            <p class="info-label">Created</p>
+                            <p class="info-value">{{ product.createdAt | date:'mediumDate' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div *ngIf="product.description" class="description-section">
+                    <h3><mat-icon>description</mat-icon> Description</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <!-- Supplier Info -->
+                <div *ngIf="supplier" class="supplier-section">
+                    <h3><mat-icon>business</mat-icon> Supplier Information</h3>
+                    <div class="supplier-info">
+                        <div class="supplier-detail">
+                            <span class="supplier-label">Name</span>
+                            <span class="supplier-value">{{ supplier.name }}</span>
+                        </div>
+                        <div class="supplier-detail">
+                            <span class="supplier-label">Email</span>
+                            <span class="supplier-value">{{ supplier.email }}</span>
+                        </div>
+                        <div class="supplier-detail" *ngIf="supplier.phone">
+                            <span class="supplier-label">Phone</span>
+                            <span class="supplier-value">{{ supplier.phone }}</span>
+                        </div>
+                        <div class="supplier-detail" *ngIf="supplier.contactPerson">
+                            <span class="supplier-label">Contact Person</span>
+                            <span class="supplier-value">{{ supplier.contactPerson }}</span>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <ng-template #notFoundTpl>
+        <div class="not-found">
+            <mat-icon>search_off</mat-icon>
+            <h2>Product Not Found</h2>
+            <p>The product you're looking for doesn't exist.</p>
+            <a routerLink="/products" mat-raised-button color="primary">Back to Products</a>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #loadingTpl>
+    <div class="loading">
+        <mat-icon>hourglass_empty</mat-icon>
+        <p>Loading product details...</p>
+    </div>
+</ng-template>
